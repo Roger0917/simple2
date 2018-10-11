@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <beansProjectDescription>
+   <springVersion>2.0</springVersion>
+ </beansProjectDescription> 
+
+
+
+
+You need to manually create the file in the root of the project, before invoking the Migration wizard. To do so, right-click the project, and select New>File from the menu. Enter .springBeans as the file name, and click Finish. The .springBeans file editor should open. Paste the following code into it, and save the file.
+ 
+<?xml version="1.0" encoding="UTF-8"?>
+ <beansProjectDescription>
+   <springVersion>2.0</springVersion>
+ </beansProjectDescription>
+
+
+<!-- 如果你选择在导入之前手动创建上述文件，可以忽略此步，直接按照向导next即可成功。
+创建文件之后你可以在菜单栏MyEclipse -> Migrate Projects 中按提示next检验文件创建是否成功。
+
+
+
+
+注意：如果你想在工程根目录下查看.springBeans文件，你需要去掉.*resources 过滤器。
+选中工程根目录后，
+Window -> navigation -> Show View Menu -> Filters
+或直接CRTL + F10 -> Filters ，去掉.*resources前面的勾即可。
+
+
+
+
+Note: The .springBeans file might not appear in the Package Explorer view; you will need to disable the.* resources filter to see it. To do so, click the white triangle (View menu) in the top-right corner of the Package Explorer view and select Filters. Next, deselect the .* resources filter, and click OK. You should now be able to see the .springBeans file.
+
+感谢原作者的转载http://blog.csdn.net/accp_fangjian/article/details/43059381
+
+            
+                
+									
+
+---------------------
+
+本文来自 Younge__ 的CSDN 博客 ，全文地址请点击：https://blog.csdn.net/yongaini10/article/details/50599885?utm_source=copy  -->
