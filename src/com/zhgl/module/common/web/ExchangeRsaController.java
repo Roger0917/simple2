@@ -39,18 +39,11 @@ public class ExchangeRsaController {
 		log.info(type);
 		OutputStream outputStream = response.getOutputStream();
 		String errormes = "";
-		if(type==null){
-			errormes = "000001没有输入参数类型";
+		if("pub".equals(type)){
+			/*errormes = "000001没有输入参数类型";
 			outputStream.write(errormes.getBytes());
 	        outputStream.flush();
-	        outputStream.close();
-		}
-		if(type!="pub"){
-			errormes = "000002参数类型不正确";
-			outputStream.write(errormes.getBytes());
-	        outputStream.flush();
-	        outputStream.close();
-		}else{
+	        outputStream.close();*/
 			//客户公钥
 			String pubrsa = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCp9GNOVP6GH5MTJKlf19SkvuONnQrJ6wGf9zL+xK2PjM3spu8PQtrOsIQiv4cpHYjleiaLiVIFd6Y9biszQJw96wSGEtr//pIBV+rkcbWcfmRiUitU/r1YT/znwUIdAM7i7Zfkx49Z3Ak1FwG6VxJTliyEoIyJbxYwwOL/rOoKSwIDAQAB";
 			//要对公钥加密的3des约定密钥
@@ -58,11 +51,17 @@ public class ExchangeRsaController {
 			byte[] real3des = controller.asc2bin(des);
 			//对公钥加密
 			String encrpRsa = Des3Util.encode3Des(real3des, pubrsa);
-			String resp = "000000"+encrpRsa;
+			String resp = "000000参数正确"+encrpRsa;
 			outputStream.write(resp.getBytes());
 	        outputStream.flush();
 	        outputStream.close();
-		} 
+		}else{
+			System.out.println(type);
+			errormes = "000001参数类型不正确";
+			outputStream.write(errormes.getBytes());
+	        outputStream.flush();
+	        outputStream.close();
+		}
 	}
 	
 	public static void main(String[] args) {
