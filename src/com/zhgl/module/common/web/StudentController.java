@@ -136,4 +136,41 @@ public class StudentController {
 	}
 	
 	
+	@RequestMapping("list2")
+	@ResponseBody
+	public List<Student> listAllPage2(@RequestParam(required = false, defaultValue = "1") int page,
+			@RequestParam(required = false,defaultValue="") String name){
+		StringBuffer jpql = null;
+		ModelAndView mav = new ModelAndView("student/student_list");
+		PageView<Student> pageView = new PageView<>(maxresult, page);
+		List<Object> params = new ArrayList<Object>();
+		LinkedHashMap<String, String> orderby = new LinkedHashMap<String, String>();
+		orderby.put("age", "asc");
+		
+		jpql = new StringBuffer("o.visible=?1 and o.name like?2");
+		params.add(true);
+		System.out.println("name"+name);
+		params.add("%"+name+"%");
+		/*System.out.println(params);
+		System.out.println(pageView.getFirstResult());
+		System.out.println(jpql);
+		System.out.println(orderby);*/
+		QueryResult<Student> qResult= studentService.getScrollData(pageView.getFirstResult(), maxresult, jpql.toString(),
+				params.toArray(), orderby);
+		pageView.setQueryResult(qResult);
+		List<Student> list = pageView.getRecords();
+		for (Student student : list) {
+			System.out.print(student.getName()+student.getAge());
+		}
+		
+		return list;
+	}
+	
+	
+	@RequestMapping("list")
+	public ModelAndView list(){
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("student/kingtable");
+		return mav;
+	}
 }
