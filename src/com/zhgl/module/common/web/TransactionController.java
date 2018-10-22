@@ -136,8 +136,8 @@ public class TransactionController {
 			String des = "753890000000479256"+"220181019";
 			byte[] real3des = asc2bin(des);
 			//对公钥加密
-			String encrpRsa = Des3Util.encode3Des(real3des, pubrsa);
-			String resp = "000000"+encrpRsa;
+			//String encrpRsa = Des3Util.encode3Des(real3des, pubrsa);
+			String resp = "000000"+pubrsa;
 			outputStream.write(resp.getBytes());
 	        outputStream.flush();
 	        outputStream.close();
@@ -153,7 +153,7 @@ public class TransactionController {
 		log.info(string);*/
 		
 		//-------------银行请求企业获得企业公钥
-		String postUrl = "http://127.0.0.1:8080/simple/ccb/mypubkey";
+		String postUrl = "http://127.0.0.1:8080/simple/cb/mypubkey";
 		String content = "type=pub";
 		String string = HttpConnectionUtil.transferData(content, postUrl);
 		System.out.println("响应的string"+string);

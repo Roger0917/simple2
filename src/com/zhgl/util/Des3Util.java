@@ -42,7 +42,7 @@ public class Des3Util {
            //生成密钥  
            SecretKey deskey = new SecretKeySpec(keybyte, "DESede");
            //加密  
-           Cipher c1 = Cipher.getInstance("DESede/CBC/PKCS5Padding");
+           Cipher c1 = Cipher.getInstance("DESede");
            c1.init(Cipher.ENCRYPT_MODE, deskey);  
            
            String pwd = Base64.encodeBase64String(c1.doFinal(src));
@@ -90,9 +90,9 @@ public class Des3Util {
     *
     * lee on 2017-08-09 10:52:54
     */ 
-    public static String decode3Des(String key, String desStr){  
+    public static String decode3Des(byte[] keybyte, String desStr){  
     	Base64 base64 = new Base64();
-    	byte[] keybyte = hex(key);
+    	//byte[] keybyte = hex(key);
     	byte[] src = base64.decode(desStr);
     			
         try {  
@@ -116,16 +116,17 @@ public class Des3Util {
     }
     
     public static void main(String[] args) {
-    	String key = "xUHdKxzVCbsgVIwTnc1jtpWn";
+    	/*String key = "xUHdKxzVCbsgVIwTnc1jtpWn";
 		String idcard = "0";
-		String encode = Des3Util.encode3Des(key, idcard);
+		//String encode = Des3Util.encode3Des(key, idcard);
 		//String encode2 = Des3Util.encode3Des2(key, idcard);
 		log.info("原串：" + idcard);
 		log.info("加密后的串：" + encode);
 		log.info("解密后的串：" + Des3Util.decode3Des(key, encode));
-
+*/
 		//log.info("不用base64加密后的串：" + encode2);
 		//log.info("不用base64解密后的串：" + Des3Util.decode3Des(key, encode2));
+    	
 	}
 
 }
