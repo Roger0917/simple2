@@ -51,7 +51,7 @@ public class ExchangeRsaController {
 			byte[] real3des = controller.asc2bin(des);
 			//对公钥加密
 			String encrpRsa = Des3Util.encode3Des(real3des, pubrsa);
-			String resp = "000000参数正确"+encrpRsa;
+			String resp = "000000"+pubrsa;
 			outputStream.write(resp.getBytes());
 	        outputStream.flush();
 	        outputStream.close();
