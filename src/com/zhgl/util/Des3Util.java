@@ -30,18 +30,18 @@ public class Des3Util {
     /**
      * 3DES加密
      * @param key 密钥，24位
-     * @param srcStr 将加密的字符串
+     * @param srcStr 将加密的字节流
      * @return
      *
      * lee on 2017-08-09 10:51:44
      */
-    public static byte[] encode3Des(String keybyte,byte[] srcStr){  
+    public static byte[] encode3Des(byte[] keybyte,byte[] srcStr){  
     	//byte[] keybyte = hex(key);
     	//byte[] src = srcStr.getBytes();
         try {  
            //生成密钥  
-        	log.info("密钥base64字符串字节数组长度"+keybyte.getBytes().length);
-           SecretKey deskey = new SecretKeySpec(keybyte.getBytes(), "DESede");
+        	//log.info("密钥base64字符串字节数组长度"+keybyte.getBytes().length);
+           SecretKey deskey = new SecretKeySpec(keybyte, "DESede");
            //加密  
            Cipher c1 = Cipher.getInstance("DESede/ECB/PKCS5Padding");
            c1.init(Cipher.ENCRYPT_MODE, deskey);  
@@ -63,25 +63,21 @@ public class Des3Util {
    /**
     * 3DES解密
     * @param key 加密密钥，长度为24字节  
-    * @param desStr 解密后的字符串
+    * @param desStr 加密后的字节流
     * @return
     *
     * lee on 2017-08-09 10:52:54
     */ 
-    public static String decode3Des(byte[] keybyte, byte[] desStr){  
-    	Base64 base64 = new Base64();
-    	//byte[] keybyte = hex(key);
-    	//byte[] src = base64.decode(desStr);
-    			
+    public static byte[] decode3Des(byte[] keybyte, byte[] desStr){  
         try {  
             //生成密钥  
             SecretKey deskey = new SecretKeySpec(keybyte, "DESede");  
             //解密  
-            Cipher c1 = Cipher.getInstance("DESede/ECB/PKCS5Padding");  
+            Cipher c1 = Cipher.getInstance("DESede");  
             c1.init(Cipher.DECRYPT_MODE, deskey);  
-            String pwd = new String(c1.doFinal(src));
+            byte[] repwd = c1.doFinal(desStr);
 //            return c1.doFinal(src);  
-            return pwd;
+            return repwd;
         } catch (java.security.NoSuchAlgorithmException e1) {  
             // TODO: handle exception  
             e1.printStackTrace();  

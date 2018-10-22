@@ -1,6 +1,8 @@
 package com.zhgl.module.common.web;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -17,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import sun.util.logging.resources.logging;
 
+import com.mysql.jdbc.log.Log;
 import com.sun.org.apache.regexp.internal.recompile;
 import com.zhgl.module.bean.IdentityGenerator;
 import com.zhgl.module.common.ebean.Project;
@@ -172,5 +175,18 @@ public class StudentController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("student/kingtable");
 		return mav;
+	}
+	public StudentController() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public static void main(String[] args) {
+
+        Date d = new Date();  
+        System.out.println(d);  
+        SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd");  
+        String dateNowStr = sdf.format(d);  
+        System.out.println("格式化后的日期：" + dateNowStr);
+        System.out.println("格式化后的日期：" + dateNowStr.replaceAll("[[\\s-:punct:]]","")); 
 	}
 }

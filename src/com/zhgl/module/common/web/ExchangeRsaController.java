@@ -2,6 +2,9 @@ package com.zhgl.module.common.web;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,11 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zhgl.util.Des3Util;
 import com.zhgl.util.HttpUtil;
@@ -32,54 +33,60 @@ public class ExchangeRsaController {
 		OutputStream outputStream = response.getOutputStream();
 		String errormes = "";
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
-		if("pub".equals(type)){
-			/*errormes = "000001没有输入参数类型";
-			outputStream.write(errormes.getBytes());
-	        outputStream.flush();
-	        outputStream.close();*/
-			//客户公钥byte[]
-			//String pubrsa = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCp9GNOVP6GH5MTJKlf19SkvuONnQrJ6wGf9zL+xK2PjM3spu8PQtrOsIQiv4cpHYjleiaLiVIFd6Y9biszQJw96wSGEtr//pIBV+rkcbWcfmRiUitU/r1YT/znwUIdAM7i7Zfkx49Z3Ak1FwG6VxJTliyEoIyJbxYwwOL/rOoKSwIDAQAB";
-			byte [] rsa = RsaUtil.genKeyPair();
-			//要对公钥加密的3des约定密钥
-			String des = "9020510801"+"181022";
-			//将普通字符串转换成16进制字符串
-			String to16 = str2HexStr(des);
-			log.info("转换成16进制"+to16);
-			String reto16 = hexStr2Str(to16);
-			log.info("转换成原字符串"+reto16);
-			//16进制字符串转换成16进制数组
-			byte[] real3desbyte = asc2bin(to16);
-			log.info("真正的des秘钥字节数组长度"+real3desbyte.length);
-		/*	for (byte b : real3desbyte) {
-				System.out.println(b);
-			}*/
-			String read3deString = new String(real3desbyte,"UTF-8");
-			System.out.println("真正的des秘钥字符串"+read3deString);
-			//字节数组转换为base64字符串
-			String base64des = Base64.encodeBase64String(real3desbyte);
-			log.info(base64des);
-			//des秘钥加密公钥
-			byte[] encodersa = Des3Util.encode3Des(Base64.encodeBase64String(real3desbyte), rsa);
-			log.info("des秘钥加密后的公钥长度"+encodersa.length);
-			//String decodersa = Des3Util.decode3Des(base64des.getBytes(), encodersa);
-			//log.info("des秘钥解密后的公钥"+decodersa);
-			//System.out.println(real3des.length);
-			byte[] resphead ="000000".getBytes();
-			byte[] resp = unitByteArray(resphead, encodersa);
-			log.info("返回的字节流长度"+resp.length);
-			String respString = Base64.encodeBase64String(resp);
-			log.info("合并的字节流转字符串"+respString);
-			Des3Util.decode3Des(Base64.encodeBase64String(real3desbyte).getBytes(), encodersa);
-			outputStream.write(respString.getBytes());
-	        outputStream.flush();
-	        outputStream.close();
+		if(type != null && type.length() != 0) {
+			if("pub".equals(type)){
+				//客户公钥byte[]
+				byte [] rsa = RsaUtil.genKeyPair();
+				//要对公钥加密的3des约定密钥
+				String des = "9020510801"+ getDate();
+				//将普通字符串转换成16进制字符串
+				String to16 = str2HexStr(des);
+				log.info("转换成16进制"+to16);
+				String reto16 = hexStr2Str(to16);
+				log.info("转换成原字符串"+reto16);
+				
+				//16进制字符串转换成16进制秘钥数组
+				byte[] real3desbyte = asc2bin(to16);
+				log.info("真正的秘钥数组长度"+real3desbyte.length);
+				String read3deString = new String(real3desbyte,"UTF-8");
+				log.info("真正的des秘钥字符串"+read3deString);
+				//字节数组转换为base64字符串
+				String base64des = Base64.encodeBase64String(real3desbyte);
+				log.info("真正的Base64秘钥字符串"+base64des);
+				//des秘钥加密公钥
+				byte[] encodersa = Des3Util.encode3Des(base64des.getBytes(), rsa);
+				log.info("des秘钥加密后的公钥长度"+encodersa.length);
+				String encodersastr = Base64.encodeBase64String(encodersa);
+				log.info("des秘钥加密后的公钥base64字符串"+ encodersastr);
+			
+				byte[] resphead ="000000".getBytes();
+				log.info("返回的字节流头长度"+resphead.length+"返回的字节流加密后的公钥长度"+encodersa.length);
+
+				byte[]decodersa = Des3Util.decode3Des(Base64.encodeBase64String(real3desbyte).getBytes(), encodersa);
+				log.info("解密后的公钥字节流长度"+decodersa.length);
+				String decodersastr = Base64.encodeBase64String(decodersa);
+				log.info("解密后的公钥base64字符串"+decodersastr);
+				byte[] aa = Base64.decodeBase64(decodersastr);
+				log.info(""+Arrays.equals(decodersa, aa));
+				outputStream.write(resphead);
+				outputStream.write(encodersastr.getBytes());
+		        outputStream.flush();
+		        outputStream.close();
+			}else{
+				System.out.println(type);
+				errormes = "000001 parameter is incorrect";
+				outputStream.write(errormes.getBytes());
+		        outputStream.flush();
+		        outputStream.close();
+			}
 		}else{
 			System.out.println(type);
-			errormes = "000001 parameter is incorrect";
+			errormes = "000002 parameter is null";
 			outputStream.write(errormes.getBytes());
 	        outputStream.flush();
 	        outputStream.close();
 		}
+			
 	}
 	
 	public static void main(String[] args) {
@@ -145,15 +152,21 @@ public class ExchangeRsaController {
 	}
 	
 	/**
-     * 合并byte数组
-     */
-    public static byte[] unitByteArray(byte[] byte1,byte[] byte2){
-        byte[] unitByte = new byte[byte1.length + byte2.length];
-        System.arraycopy(byte1, 0, unitByte, 0, byte1.length);
-        System.arraycopy(byte2, 0, unitByte, byte1.length, byte2.length);
-        return unitByte;
-    }
-
+	 * 获得当前日期后6位 
+	 * @return
+	 */
+	public static String getDate(){
+		  Date d = new Date();  
+	      System.out.println(d);  
+	      SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd");  
+	      String dateNowStr = sdf.format(d);  
+	      System.out.println("格式化后的日期：" + dateNowStr);
+	      String dateNowStrsplit = dateNowStr.replaceAll("[[\\s-:punct:]]","");
+	      System.out.println("格式化后的日期：" + dateNowStrsplit); 
+	      return dateNowStrsplit;
+	}
+	
+	
 	
 }
 

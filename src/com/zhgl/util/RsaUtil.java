@@ -39,26 +39,13 @@ public class RsaUtil {
 			// 得到公钥字符串
 			log.info("公钥字节位数"+publicKey.getEncoded().length);
 			String publicKeyString = Base64.encodeBase64String(publicKey.getEncoded());
-			log.info("公钥字符串"+publicKeyString+"长度"+publicKeyString.length());
-			log.info(""+publicKeyString.getBytes().length);
+			log.info("公钥base64字符串"+publicKeyString);
+			log.info("公钥base64字符串长度"+publicKeyString.length());
 			// 得到私钥字符串
 			log.info("私钥字节位数"+privateKey.getEncoded().length);
 			String privateKeyString = Base64.encodeBase64String(privateKey.getEncoded());
-			log.info("私钥字符串"+privateKeyString+"长度"+privateKeyString.length());
-			log.info(""+"000000".getBytes().length);
-			// 将密钥对写入到文件
-			/*FileWriter pubfw = new FileWriter(filePath + "/publicKey.keystore");
-			FileWriter prifw = new FileWriter(filePath + "/privateKey.keystore");
-			BufferedWriter pubbw = new BufferedWriter(pubfw);
-			BufferedWriter pribw = new BufferedWriter(prifw);
-			pubbw.write(publicKeyString);
-			pribw.write(privateKeyString);
-			pubbw.flush();
-			pubbw.close();
-			pubfw.close();
-			pribw.flush();
-			pribw.close();
-			prifw.close();*/
+			log.info("私钥字符串"+privateKeyString);
+			log.info("私钥base64字符串长度"+publicKeyString.length());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
