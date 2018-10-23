@@ -2,6 +2,7 @@ package com.zhgl.module.common.web;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.zhgl.util.Des3Util;
+import com.zhgl.util.Des3_2Util;
 import com.zhgl.util.HttpUtil;
 import com.zhgl.util.RsaUtil;
 
@@ -39,37 +41,26 @@ public class ExchangeRsaController {
 				byte [] rsa = RsaUtil.genKeyPair();
 				//要对公钥加密的3des约定密钥
 				String des = "9020510801"+ getDate();
-				//将普通字符串转换成16进制字符串
-				String to16 = str2HexStr(des);
-				log.info("转换成16进制"+to16);
-				String reto16 = hexStr2Str(to16);
-				log.info("转换成原字符串"+reto16);
-				
-				//16进制字符串转换成16进制秘钥数组
-				byte[] real3desbyte = asc2bin(to16);
+				//约定密钥转换成16进制秘钥数组
+				byte[] real3desbyte = asc2bin(des);
 				log.info("真正的秘钥数组长度"+real3desbyte.length);
-				String read3deString = new String(real3desbyte,"UTF-8");
-				log.info("真正的des秘钥字符串"+read3deString);
 				//字节数组转换为base64字符串
 				String base64des = Base64.encodeBase64String(real3desbyte);
 				log.info("真正的Base64秘钥字符串"+base64des);
 				//des秘钥加密公钥
-				byte[] encodersa = Des3Util.encode3Des(base64des.getBytes(), rsa);
-				log.info("des秘钥加密后的公钥长度"+encodersa.length);
-				String encodersastr = Base64.encodeBase64String(encodersa);
-				log.info("des秘钥加密后的公钥base64字符串"+ encodersastr);
-			
-				byte[] resphead ="000000".getBytes();
-				log.info("返回的字节流头长度"+resphead.length+"返回的字节流加密后的公钥长度"+encodersa.length);
-
-				byte[]decodersa = Des3Util.decode3Des(Base64.encodeBase64String(real3desbyte).getBytes(), encodersa);
-				log.info("解密后的公钥字节流长度"+decodersa.length);
-				String decodersastr = Base64.encodeBase64String(decodersa);
-				log.info("解密后的公钥base64字符串"+decodersastr);
-				byte[] aa = Base64.decodeBase64(decodersastr);
-				log.info(""+Arrays.equals(decodersa, aa));
-				outputStream.write(resphead);
-				outputStream.write(encodersastr.getBytes());
+				byte incode [] = Des3_2Util.EncryptString(rsa, real3desbyte);
+				String incodestr = Base64.encodeBase64String(incode);
+				log.info("加密后的公钥base64串"+incodestr);
+				byte[] head = "000000".getBytes();
+				log.info("加密后的字节位数"+incode.length);
+				
+				byte decode[] = Des3_2Util.DecryptString(incodestr, real3desbyte);
+				String decodestr = Base64.encodeBase64String(decode);
+				log.info("解密后的字节位数"+decode.length);
+				log.info("解密后的base64公钥串"+decodestr);
+				log.info("返回的字节流长度"+(head.length+incode.length));
+				outputStream.write(head);
+				outputStream.write(incode);
 		        outputStream.flush();
 		        outputStream.close();
 			}else{
@@ -89,7 +80,7 @@ public class ExchangeRsaController {
 			
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws UnsupportedEncodingException {
 		Map<String, String> map =new HashMap<>();
 		map.put("type","pub");
 		String result=HttpUtil.doPost("http://localhost:8080/simple/dcp/open/pubkey", map);
@@ -157,10 +148,10 @@ public class ExchangeRsaController {
 	 */
 	public static String getDate(){
 		  Date d = new Date();  
-	      System.out.println(d);  
+	      //System.out.println(d);  
 	      SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd");  
 	      String dateNowStr = sdf.format(d);  
-	      System.out.println("格式化后的日期：" + dateNowStr);
+	      //System.out.println("格式化后的日期：" + dateNowStr);
 	      String dateNowStrsplit = dateNowStr.replaceAll("[[\\s-:punct:]]","");
 	      System.out.println("格式化后的日期：" + dateNowStrsplit); 
 	      return dateNowStrsplit;

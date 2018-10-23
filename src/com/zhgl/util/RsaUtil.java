@@ -40,12 +40,12 @@ public class RsaUtil {
 			log.info("公钥字节位数"+publicKey.getEncoded().length);
 			String publicKeyString = Base64.encodeBase64String(publicKey.getEncoded());
 			log.info("公钥base64字符串"+publicKeyString);
-			log.info("公钥base64字符串长度"+publicKeyString.length());
+			/*log.info("公钥base64字符串长度"+publicKeyString.length());*/
 			// 得到私钥字符串
-			log.info("私钥字节位数"+privateKey.getEncoded().length);
+			/*log.info("私钥字节位数"+privateKey.getEncoded().length);
 			String privateKeyString = Base64.encodeBase64String(privateKey.getEncoded());
 			log.info("私钥字符串"+privateKeyString);
-			log.info("私钥base64字符串长度"+publicKeyString.length());
+			log.info("私钥base64字符串长度"+publicKeyString.length());*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
